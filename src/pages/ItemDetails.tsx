@@ -8,6 +8,7 @@ const ItemDetails = () => {
   return (
     <div>
       <p>{foundItem?.name}</p>
+      <br />
       <p>{foundItem?.description}</p>
     </div>
   );

@@ -7,6 +7,7 @@ import Items from "./pages/Items.tsx";
 import Layout from "./layouts/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ItemDetails from "./pages/ItemDetails.tsx";
+import Login from "./pages/Login.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,6 +19,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/contact" element={<Contact />} />
           <Route path="/items" element={<Items />} />
           <Route path="/items/:id" element={<ItemDetails />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>
