@@ -1,42 +1,37 @@
 import { NavLink, Outlet } from "react-router";
-
-const links = [
-  { path: "/", label: "Home" },
-  { path: "/about", label: "About" },
-  { path: "/contact", label: "Contact" },
-  { path: "/items", label: "Items" },
-  { path: "/settings", label: "settings" },
-  { path: "/login", label: "Login" },
-];
-
-const navStyle: React.CSSProperties = {
-  display: "flex",
-  justifyContent: "center",
-  padding: "20px",
-  backgroundColor: "#f4f4f4",
-};
-
-const ulStyle: React.CSSProperties = {
-  display: "flex",
-  listStyle: "none",
-  gap: "20px",
-  padding: 0,
-  margin: 0,
-};
+import { useState } from "react";
 
 const Layout = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <div>
-      <nav style={navStyle}>
-        <ul style={ulStyle}>
-          {links.map((link) => (
-            <NavLink key={link.label} to={link.path}>
-              {link.label}
-            </NavLink>
-          ))}
+      <nav>
+        <ul style={{ display: "flex", gap: "20px", listStyle: "none" }}>
+          <li>
+            <NavLink to="/">Home</NavLink>
+          </li>
+          <li>
+            <NavLink to="/about">About</NavLink>
+          </li>
+          <li>
+            <NavLink to="/contact">Contact</NavLink>
+          </li>
+          <li>
+            <NavLink to="/items">Items</NavLink>
+          </li>
+          {isLoggedIn && (
+            <li>
+              <NavLink to="/settings">Settings</NavLink>
+            </li>
+          )}
+          {!isLoggedIn && (
+            <li>
+              <NavLink to="/login">Login</NavLink>
+            </li>
+          )}
         </ul>
       </nav>
-      <Outlet />
+      <Outlet context={{ isLoggedIn, setIsLoggedIn }} />
     </div>
   );
 };
