@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { useOutletContext, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import { useLoginContext } from "../context/LoginContext";
 
 const Login = () => {
-  const { setIsLoggedIn } = useOutletContext<{
-    setIsLoggedIn: (val: boolean) => void;
-  }>();
+  const { isLoggedIn, setIsLoggedIn } = useLoginContext();
+
+  console.log({ isLoggedIn });
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -13,8 +14,8 @@ const Login = () => {
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const correctEmail = "toni@test.com";
-    const correctPassword = "123456";
+    const correctEmail = "abc";
+    const correctPassword = "def";
 
     if (email === correctEmail && password === correctPassword) {
       console.log("Login successful");
@@ -31,7 +32,7 @@ const Login = () => {
     //form for login
     <form onSubmit={handleLogin}>
       <input
-        type="email"
+        type="text"
         placeholder="Enter email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}

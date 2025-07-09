@@ -1,8 +1,8 @@
 import { NavLink, Outlet } from "react-router";
-import { useState } from "react";
+import { useLoginContext } from "../context/LoginContext";
 
 const Layout = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, setIsLoggedIn } = useLoginContext();
   return (
     <div>
       <nav>
@@ -21,12 +21,7 @@ const Layout = () => {
           </li>
           {isLoggedIn && (
             <li>
-              <NavLink to="/settings">Settings</NavLink>
-            </li>
-          )}
-          {!isLoggedIn && (
-            <li>
-              <NavLink to="/login">Login</NavLink>
+              <NavLink to="/settings">settings</NavLink>
             </li>
           )}
         </ul>

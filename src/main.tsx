@@ -8,20 +8,26 @@ import Layout from "./layouts/Layout.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import ItemDetails from "./pages/ItemDetails.tsx";
 import Login from "./pages/Login.tsx";
+import { LoginContextProvider } from "./context/LoginContext";
+import ProtectedRoute from "./pages/ProtectedRoute.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<HomePage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/items" element={<Items />} />
-          <Route path="/items/:id" element={<ItemDetails />} />
+    <LoginContextProvider>
+      <BrowserRouter>
+        <Routes>
           <Route path="/login" element={<Login />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/items" element={<Items />} />
+              <Route path="/items/:id" element={<ItemDetails />} />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </LoginContextProvider>
   </StrictMode>
 );
