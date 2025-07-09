@@ -6,5 +6,6 @@ const ProtectedRoute = () => {
 
   return isLoggedIn ? <Outlet /> : <Navigate to="/login" />;
 };
+//koment for commit test
 
 export default ProtectedRoute;
