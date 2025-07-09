@@ -28,6 +28,7 @@ const Login = () => {
   };
 
   return (
+    //form for login
     <form onSubmit={handleLogin}>
       <input
         type="email"
