@@ -10,6 +10,7 @@ import ItemDetails from "./pages/ItemDetails.tsx";
 import Login from "./pages/Login.tsx";
 import { LoginContextProvider } from "./context/LoginContext";
 import ProtectedRoute from "./pages/ProtectedRoute.tsx";
+import PotvrdaPodatakaForm from "./pages/PotvrdaPodatakaForm.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -23,6 +24,7 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/items" element={<Items />} />
+              <Route path="/forma" element={<PotvrdaPodatakaForm />} />
               <Route path="/items/:id" element={<ItemDetails />} />
             </Route>
           </Route>

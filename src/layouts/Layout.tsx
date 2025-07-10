@@ -19,6 +19,9 @@ const Layout = () => {
           <li>
             <NavLink to="/items">Items</NavLink>
           </li>
+          <li>
+            <NavLink to="/forma">Potvrda podataka-forma</NavLink>
+          </li>
           {isLoggedIn && (
             <li>
               <NavLink to="/settings">settings</NavLink>

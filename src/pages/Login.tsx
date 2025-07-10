@@ -34,7 +34,7 @@ const Login = () => {
   console.log(errors);
 
   const onSubmit = async ({ email, password }: LoginForm) => {
-    const correctEmail = "abc";
+    const correctEmail = "abc@toni.com";
     const correctPassword = "def";
 
     if (email === correctEmail && password === correctPassword) {
