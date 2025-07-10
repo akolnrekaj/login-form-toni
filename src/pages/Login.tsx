@@ -1,19 +1,39 @@
-import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useLoginContext } from "../context/LoginContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+
+export type LoginForm = {
+  email: string;
+  password: string;
+};
+
+const loginPageValidationSchema = z.object({
+  email: z.string().email("neispravan imejl"),
+  password: z.string(),
+});
 
 const Login = () => {
-  const { isLoggedIn, setIsLoggedIn } = useLoginContext();
-
-  console.log({ isLoggedIn });
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useLoginContext();
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginPageValidationSchema),
+    mode: "onTouched",
+  });
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { email, password } = watch();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const isDisabled = !email || !password;
 
+  console.log(errors);
+
+  const onSubmit = async ({ email, password }: LoginForm) => {
     const correctEmail = "abc";
     const correctPassword = "def";
 
@@ -30,20 +50,19 @@ const Login = () => {
 
   return (
     //form for login
-    <form onSubmit={handleLogin}>
-      <input
-        type="text"
-        placeholder="Enter email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input type="text" placeholder="Enter email" {...register("email")} />
+      {errors.email?.message}
       <input
         type="password"
         placeholder="Enter password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        {...register("password")}
       />
-      <button type="submit">Login</button>
+      {errors.password?.message}
+
+      <button disabled={isDisabled} type="submit">
+        Login
+      </button>
     </form>
   );
 };
