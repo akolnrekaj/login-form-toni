@@ -1,0 +1,23 @@
+.p-personalInfo {
+  display: flex;
+  flex-direction: column;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    input,
+    button {
+      width: fit-content;
+    }
+
+    input.invalid {
+      outline: 2px solid red;
+    }
+
+    &_errors {
+      color: red;
+    }
+  }
+}
