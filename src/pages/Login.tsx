@@ -49,21 +49,26 @@ const Login = () => {
   };
 
   return (
-    //form for login
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input type="text" placeholder="Enter email" {...register("email")} />
-      {errors.email?.message}
-      <input
-        type="password"
-        placeholder="Enter password"
-        {...register("password")}
-      />
-      {errors.password?.message}
-
-      <button disabled={isDisabled} type="submit">
-        Login
-      </button>
-    </form>
+    //form for
+    <div className="form-container">
+      {" "}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input type="text" placeholder="Enter email" {...register("email")} />
+        {errors.email?.message}
+        <input
+          type="password"
+          placeholder="Enter password"
+          {...register("password")}
+        />
+        {errors.password?.message}
+        <div className="form-buttons">
+          {" "}
+          <button className="form-buttons" disabled={isDisabled} type="submit">
+            Login
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

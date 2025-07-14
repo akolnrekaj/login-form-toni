@@ -1,8 +1,7 @@
 import { NavLink, Outlet } from "react-router";
-import { useLoginContext } from "../context/LoginContext";
 
 const Layout = () => {
-  const { isLoggedIn, setIsLoggedIn } = useLoginContext();
+  // const { isLoggedIn, setIsLoggedIn } = useLoginContext();
   return (
     <div>
       <nav>
@@ -22,14 +21,13 @@ const Layout = () => {
           <li>
             <NavLink to="/forma">Potvrda podataka-forma</NavLink>
           </li>
-          {isLoggedIn && (
-            <li>
-              <NavLink to="/settings">settings</NavLink>
-            </li>
-          )}
+
+          <li>
+            <NavLink to="/settings">settings</NavLink>
+          </li>
         </ul>
       </nav>
-      <Outlet context={{ isLoggedIn, setIsLoggedIn }} />
+      <Outlet />
     </div>
   );
 };
