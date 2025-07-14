@@ -4,59 +4,62 @@ import "../assets/styles/PotvrdaPodatakaForm.scss";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export type OsobnaForm = {
-  ime: string;
-  prezime: string;
-  datumRodjenja: string;
-  spol: string;
-  oib: string;
-  drzavljanstvo: string;
-  mjestoPrebivalista: string;
-  ulicaIKucniBroj: string;
-  osobnaIskaznica: number;
-  datumIzdavanja: string;
-  datumIsteka: string;
-  izdavackoTijelo: string;
-  izdala: string;
+export type IdCardForm = {
+  name: string;
+  surname: string;
+  birthDay: string;
+  sex: string;
+  oib?: string;
+  nationality: string;
+  placeOfLiving: string;
+  adress: string;
+  issuedDay: string;
+  expireDate: string;
+  issuingBody: string;
+  issued: string;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const osobnaFormSchema = z.object({
-  ime: z.string().nonempty("Ime je obavezno"),
-  prezime: z.string().nonempty("Prezime je obavezno"),
-  datumRodjenja: z.string().nonempty("Datum rođenja je obavezan"),
-  spol: z.string().nonempty("Spol je obavezan"),
-  oib: z.string().regex(/^[0-9]+$/, "OIB smije sadržavati samo brojeve"),
-  drzavljanstvo: z.string().nonempty("Državljanstvo je obavezno"),
-  mjestoPrebivalista: z.string().nonempty("Mjesto prebivališta je obavezno"),
-  ulicaIKucniBroj: z.string().nonempty("Ulica i kućni broj je obavezno"),
-  osobnaIskaznica: z.number(),
-  datumIzdavanja: z.string().nonempty("Datum izdavanja je obavezan"),
-  datumIsteka: z.string().nonempty("Datum isteka je obavezan"),
-  izdavackoTijelo: z.string().nonempty("Izdavačko tijelo je obavezno"),
-  izdala: z.string().nonempty("Izdala je obavezno"),
+const IdCardFormSchema = z.object({
+  name: z.string().nonempty("Ime je obavezno"),
+  surname: z.string().nonempty("Prezime je obavezno"),
+  birthDay: z.string().nonempty("Datum rođenja je obavezan"),
+  sex: z.string().nonempty("Spol je obavezan"),
+  oib: z
+    .string()
+    .regex(/^[0-9]+$/, "OIB smije sadržavati samo brojeve")
+    .optional()
+    .or(z.literal("")),
+  nationality: z.string().nonempty("Državljanstvo je obavezno"),
+  placeOfLiving: z.string().nonempty("Mjesto prebivališta je obavezno"),
+  adress: z.string().nonempty("Ulica i kućni broj je obavezno"),
+  issuedDay: z.string().nonempty("Datum izdavanja je obavezan"),
+  expireDate: z.string().nonempty("Datum isteka je obavezan"),
+  issuingBody: z.string().nonempty("Izdavačko tijelo je obavezno"),
+  issued: z.string(),
 });
 
 const PotvrdaPodatakaForm = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(() => {
+    const savedStep = localStorage.getItem("currentStep");
+    return savedStep ? parseInt(savedStep) : 1;
+  });
 
-  const savedForm = localStorage.getItem("osobnaForm");
+  const savedForm = localStorage.getItem("IdCardForm");
   const defaultValues = savedForm
     ? JSON.parse(savedForm)
     : {
-        ime: "",
-        prezime: "",
-        datumRodjenja: "",
-        spol: "",
+        name: "",
+        surname: "",
+        birthDay: "",
+        sex: "",
         oib: "",
-        drzavljanstvo: "",
-        mjestoPrebivalista: "",
-        ulicaIKucniBroj: "",
-        osobnaIskaznica: 0,
-        datumIzdavanja: "",
-        datumIsteka: "",
-        izdavackoTijelo: "",
-        izdala: "",
+        nationality: "",
+        placeOfLiving: "",
+        adress: "",
+        issuedDay: "",
+        expireDate: "",
+        issuingBody: "",
+        issued: "",
       };
 
   const {
@@ -66,32 +69,33 @@ const PotvrdaPodatakaForm = () => {
     trigger,
     watch,
     reset,
-  } = useForm<OsobnaForm>({
+  } = useForm<IdCardForm>({
     mode: "onChange",
-    resolver: zodResolver(osobnaFormSchema),
+    resolver: zodResolver(IdCardFormSchema),
     defaultValues,
   });
 
   const formValues = watch();
 
   useEffect(() => {
-    localStorage.setItem("osobnaForm", JSON.stringify(formValues));
+    localStorage.setItem("IdCardForm", JSON.stringify(formValues));
   }, [formValues]);
 
-  const onSubmit = (data: OsobnaForm) => {
+  useEffect(() => {
+    localStorage.setItem("currentStep", step.toString());
+  }, [step]);
+
+  const onSubmit = (data: IdCardForm) => {
     console.log("Kompletna forma:", data);
+    localStorage.removeItem("currentStep");
   };
 
   const nextStep = async () => {
     let valid = false;
     if (step === 1)
-      valid = await trigger(["ime", "prezime", "datumRodjenja", "spol", "oib"]);
+      valid = await trigger(["name", "surname", "birthDay", "sex", "oib"]);
     else if (step === 2)
-      valid = await trigger([
-        "drzavljanstvo",
-        "mjestoPrebivalista",
-        "ulicaIKucniBroj",
-      ]);
+      valid = await trigger(["nationality", "placeOfLiving", "adress"]);
     else valid = await trigger();
 
     if (valid) setStep((prev) => prev + 1);
@@ -106,21 +110,21 @@ const PotvrdaPodatakaForm = () => {
       <form className="potvrda-form" onSubmit={handleSubmit(onSubmit)}>
         {step === 1 && (
           <>
-            <label htmlFor="ime">Ime</label>
-            <input id="ime" {...register("ime")} />
-            {errors.ime && <p>{errors.ime.message}</p>}
+            <label htmlFor="name">Ime</label>
+            <input id="name" {...register("name")} />
+            {errors.name && <p>{errors.name.message}</p>}
 
-            <label htmlFor="prezime">Prezime</label>
-            <input id="prezime" {...register("prezime")} />
-            {errors.prezime && <p>{errors.prezime.message}</p>}
+            <label htmlFor="surname">Prezime</label>
+            <input id="surname" {...register("surname")} />
+            {errors.surname && <p>{errors.surname.message}</p>}
 
-            <label htmlFor="datumRodjenja">Datum rođenja</label>
-            <input id="datumRodjenja" {...register("datumRodjenja")} />
-            {errors.datumRodjenja && <p>{errors.datumRodjenja.message}</p>}
+            <label htmlFor="birthDay">Datum rođenja</label>
+            <input id="birthDay" {...register("birthDay")} />
+            {errors.birthDay && <p>{errors.birthDay.message}</p>}
 
-            <label htmlFor="spol">Spol</label>
-            <input id="spol" {...register("spol")} />
-            {errors.spol && <p>{errors.spol.message}</p>}
+            <label htmlFor="sex">Spol</label>
+            <input id="sex" {...register("sex")} />
+            {errors.sex && <p>{errors.sex.message}</p>}
 
             <label htmlFor="oib">OIB</label>
             <input id="oib" {...register("oib")} />
@@ -134,22 +138,17 @@ const PotvrdaPodatakaForm = () => {
 
         {step === 2 && (
           <>
-            <label htmlFor="drzavljanstvo">Državljanstvo</label>
-            <input id="drzavljanstvo" {...register("drzavljanstvo")} />
-            {errors.drzavljanstvo && <p>{errors.drzavljanstvo.message}</p>}
+            <label htmlFor="nationality">Državljanstvo</label>
+            <input id="nationality" {...register("nationality")} />
+            {errors.nationality && <p>{errors.nationality.message}</p>}
 
-            <label htmlFor="mjestoPrebivalista">Mjesto prebivališta</label>
-            <input
-              id="mjestoPrebivalista"
-              {...register("mjestoPrebivalista")}
-            />
-            {errors.mjestoPrebivalista && (
-              <p>{errors.mjestoPrebivalista.message}</p>
-            )}
+            <label htmlFor="placeOfLiving">Mjesto prebivališta</label>
+            <input id="placeOfLiving" {...register("placeOfLiving")} />
+            {errors.placeOfLiving && <p>{errors.placeOfLiving.message}</p>}
 
-            <label htmlFor="ulicaIKucniBroj">Ulica i kućni broj</label>
-            <input id="ulicaIKucniBroj" {...register("ulicaIKucniBroj")} />
-            {errors.ulicaIKucniBroj && <p>{errors.ulicaIKucniBroj.message}</p>}
+            <label htmlFor="adress">Ulica i kućni broj</label>
+            <input id="adress" {...register("adress")} />
+            {errors.adress && <p>{errors.adress.message}</p>}
 
             <div className="buttons">
               <button type="button" onClick={prevStep}>
@@ -164,20 +163,20 @@ const PotvrdaPodatakaForm = () => {
 
         {step === 3 && (
           <>
-            <label htmlFor="datumIzdavanja">Datum izdavanja</label>
-            <input id="datumIzdavanja" {...register("datumIzdavanja")} />
-            {errors.datumIzdavanja && <p>{errors.datumIzdavanja.message}</p>}
+            <label htmlFor="issuedDay">Datum izdavanja</label>
+            <input id="issuedDay" {...register("issuedDay")} />
+            {errors.issuedDay && <p>{errors.issuedDay.message}</p>}
 
-            <label htmlFor="datumIsteka">Datum isteka</label>
-            <input id="datumIsteka" {...register("datumIsteka")} />
-            {errors.datumIsteka && <p>{errors.datumIsteka.message}</p>}
+            <label htmlFor="expireDate">Datum isteka</label>
+            <input id="expireDate" {...register("expireDate")} />
+            {errors.expireDate && <p>{errors.expireDate.message}</p>}
 
-            <label htmlFor="izdavackoTijelo">Izdavačko tijelo</label>
-            <input id="izdavackoTijelo" {...register("izdavackoTijelo")} />
-            {errors.izdavackoTijelo && <p>{errors.izdavackoTijelo.message}</p>}
+            <label htmlFor="issuingBody">Izdavačko tijelo</label>
+            <input id="issuingBody" {...register("issuingBody")} />
+            {errors.issuingBody && <p>{errors.issuingBody.message}</p>}
 
-            <label htmlFor="izdala">Izdala</label>
-            <input id="izdala" {...register("izdala")} />
+            <label htmlFor="issued">Izdala</label>
+            <input id="issued" {...register("issued")} />
 
             <div className="form-buttons">
               <button type="button" onClick={prevStep}>
@@ -194,7 +193,7 @@ const PotvrdaPodatakaForm = () => {
           type="button"
           className="reset-btn"
           onClick={() => {
-            localStorage.removeItem("osobnaForm");
+            localStorage.removeItem("IdCardForm");
             reset(defaultValues);
             setStep(1);
           }}
